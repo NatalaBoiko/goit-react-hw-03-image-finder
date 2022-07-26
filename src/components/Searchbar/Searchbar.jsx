@@ -18,8 +18,8 @@ export class Searchbar extends Component {
   handleSubmit = e => {
     e.preventDefault();
     // console.log(this.state);
-    // this.props.onSubmit(this.state);
-    this.props.onSubmit(this.state.data);
+    this.props.onSubmit(this.state);
+    this.props.onSubmit(this.state.images);
 
     this.setState({ searchQuery: '' });
   };
