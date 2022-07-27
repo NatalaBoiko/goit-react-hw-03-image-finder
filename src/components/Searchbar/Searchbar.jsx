@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './Searchbar.css';
+import PropTypes from 'prop-types';
 
 export class Searchbar extends Component {
   state = {
@@ -11,22 +12,22 @@ export class Searchbar extends Component {
     // console.log(e.currentTarget.name);
     // console.log(e.currentTarget.value);
     // this.setState({ searchQuery: e.currentTarget.value });
-    const { name, value } = e.currentTarget;
-    this.setState({ [name]: value });
+    // const { name, value } = e.currentTarget;
+    // this.setState({ [name]: value.trim() });
+    this.setState({ searchQuery: e.currentTarget.value.toLowerCase() });
   };
 
   handleSubmit = e => {
     e.preventDefault();
-    // console.log(this.state);
-    this.props.onSubmit(this.state);
-    this.props.onSubmit(this.state.images);
-
+    // if (this.state.searchQuery.trim() === '') {
+    //   alert('Enter something :)');
+    //   return;
+    // }
+    this.props.onSubmit(this.state.searchQuery);
     this.setState({ searchQuery: '' });
   };
 
   render() {
-    const { searchQuery } = this.state;
-
     return (
       <header className="Searchbar">
         <form onSubmit={this.handleSubmit} className="SearchForm">
@@ -41,7 +42,7 @@ export class Searchbar extends Component {
             autoFocus
             placeholder="Search images and photos"
             name="searchQuery"
-            value={searchQuery}
+            value={this.state.searchQuery}
             onChange={this.handleChange}
           />
         </form>
@@ -49,3 +50,6 @@ export class Searchbar extends Component {
     );
   }
 }
+Searchbar.propTypes = {
+  onSubmit: PropTypes.func,
+};
