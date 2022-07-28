@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { fetchImages } from './services/api';
 import { Searchbar } from './Searchbar/Searchbar';
 import { Loader } from './Loader/Loader';
+import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
 import { animateScroll } from 'react-scroll';
-
-import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Modal } from './Modal/Modal';
 
 export class App extends Component {
   state = {
@@ -16,6 +16,8 @@ export class App extends Component {
     isLoading: false,
     loadMore: false,
     error: null,
+    showModal: false,
+    largeImageURL: '',
   };
 
   componentDidUpdate(_, prevState) {
@@ -70,13 +72,31 @@ export class App extends Component {
     });
   };
 
+  openModal = ({ showModal }) => {
+    this.setState({ showModal: !showModal });
+  };
+
   render() {
-    const { images, isLoading, loadMore, page } = this.state;
+    const { images, isLoading, loadMore, page, showModal, largeImageURL } =
+      this.state;
     return (
       <>
         <Searchbar onSubmit={this.formSubmit} />
         {isLoading ? <Loader /> : <ImageGallery images={images} />}
         {loadMore && <Button onloadMore={this.onloadMore} page={page} />}
+
+        <button type="button" onClick={this.openModal}>
+          open modal
+        </button>
+
+        {showModal && (
+          <Modal>
+            {largeImageURL}
+            <button type="button" onClick={this.openModal}>
+              close
+            </button>
+          </Modal>
+        )}
       </>
     );
   }
