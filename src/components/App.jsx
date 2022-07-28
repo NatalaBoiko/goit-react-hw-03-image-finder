@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-// import fetchImagesQuery from './services/api';
-
+import { fetchImages } from './services/api';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 
@@ -10,7 +8,6 @@ export class App extends Component {
     searchQuery: '',
     images: [],
     page: 1,
-    per_page: 12,
     isLoading: false,
     error: null,
   };
@@ -22,19 +19,15 @@ export class App extends Component {
     }
   }
 
-  getImages = async query => {
+  getImages = async (query, page) => {
+    this.setState({ isLoading: true });
     if (!query) {
       return;
     }
-
     try {
-      const response = await axios.get(
-        `https://pixabay.com/api/?key=27697316-9cc45c303ea5cb91afbaa3e72&q=${query}&image_type=photo&per_page=12`
-      );
-      this.setState({ images: response.data.hits });
-
-      console.log(response.data.hits);
-      console.log(response.data.totalHits);
+      const { hits, totalHits } = await fetchImages(query, page);
+      // console.log(hits, totalHits);
+      this.setState(prevState => ({ images: [...prevState.images, ...hits] }));
     } catch (error) {
       this.setState({ error });
     } finally {
@@ -43,7 +36,11 @@ export class App extends Component {
   };
 
   formSubmit = searchQuery => {
-    this.setState({ searchQuery });
+    this.setState({
+      searchQuery,
+      images: [],
+      page: 1,
+    });
     console.log(searchQuery);
   };
 
