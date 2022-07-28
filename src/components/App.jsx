@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { fetchImages } from './services/api';
 import { Searchbar } from './Searchbar/Searchbar';
+import { Loader } from './Loader/Loader';
+import { Button } from './Button/Button';
+import { animateScroll } from 'react-scroll';
+
 import { ImageGallery } from './ImageGallery/ImageGallery';
 
 export class App extends Component {
@@ -8,11 +12,16 @@ export class App extends Component {
     searchQuery: '',
     images: [],
     page: 1,
+    per_page: 12,
     isLoading: false,
+    loadMore: false,
     error: null,
   };
 
   componentDidUpdate(_, prevState) {
+    console.log(prevState.page);
+    console.log(this.state.page);
+
     const { searchQuery, page } = this.state;
     if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
       this.getImages(searchQuery, page);
@@ -26,10 +35,13 @@ export class App extends Component {
     }
     try {
       const { hits, totalHits } = await fetchImages(query, page);
-      // console.log(hits, totalHits);
-      this.setState(prevState => ({ images: [...prevState.images, ...hits] }));
+      console.log(hits, totalHits);
+      this.setState(prevState => ({
+        images: [...prevState.images, ...hits],
+        loadMore: this.state.page < Math.ceil(totalHits / this.state.per_page),
+      }));
     } catch (error) {
-      this.setState({ error });
+      this.setState({ error: error.message });
     } finally {
       this.setState({ isLoading: false });
     }
@@ -40,16 +52,31 @@ export class App extends Component {
       searchQuery,
       images: [],
       page: 1,
+      loadMore: false,
     });
     console.log(searchQuery);
   };
 
+  onloadMore = () => {
+    this.setState(prevState => ({ page: prevState.page + 1 }));
+    this.scrollOnMoreButton();
+  };
+
+  scrollOnMoreButton = () => {
+    animateScroll.scrollToBottom({
+      duration: 1000,
+      delay: 10,
+      smooth: 'linear',
+    });
+  };
+
   render() {
-    const { images } = this.state;
+    const { images, isLoading, loadMore, page } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.formSubmit} />
-        {images.length > 0 && <ImageGallery images={images} />}
+        {isLoading ? <Loader /> : <ImageGallery images={images} />}
+        {loadMore && <Button onloadMore={this.onloadMore} page={page} />}
       </>
     );
   }
