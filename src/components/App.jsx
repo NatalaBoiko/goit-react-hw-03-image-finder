@@ -21,9 +21,8 @@ export class App extends Component {
   };
 
   componentDidUpdate(_, prevState) {
-    console.log(prevState.page);
-    console.log(this.state.page);
-
+    // console.log(prevState.page);
+    // console.log(this.state.page);
     const { searchQuery, page } = this.state;
     if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
       this.getImages(searchQuery, page);
@@ -72,8 +71,26 @@ export class App extends Component {
     });
   };
 
-  openModal = ({ showModal }) => {
-    this.setState({ showModal: !showModal });
+  openModal = () => {
+    this.setState(({ showModal }) => ({
+      showModal: !showModal,
+    }));
+  };
+  // openModal = () => {
+  //   this.setState(({ largeImageUrl }) => ({
+  //     largeImageUrl: largeImageUrl,
+  //   }));
+  // };
+  // openModal = ({ largeImageUrl }) => {
+  //   this.setState({
+  //     largeImageUrl: largeImageUrl,
+  //   });
+  // };
+
+  closeModal = () => {
+    this.setState(prevState => ({
+      showModal: false,
+    }));
   };
 
   render() {
@@ -82,20 +99,20 @@ export class App extends Component {
     return (
       <>
         <Searchbar onSubmit={this.formSubmit} />
-        {isLoading ? <Loader /> : <ImageGallery images={images} />}
+
+        {isLoading ? (
+          <Loader />
+        ) : (
+          <ImageGallery images={images} openModal={this.openModal} />
+        )}
+
         {loadMore && <Button onloadMore={this.onloadMore} page={page} />}
 
-        <button type="button" onClick={this.openModal}>
-          open modal
-        </button>
-
+        {/* <button type="button" onClick={this.openModal}>
+          Open modal
+        </button> */}
         {showModal && (
-          <Modal>
-            {largeImageURL}
-            <button type="button" onClick={this.openModal}>
-              close
-            </button>
-          </Modal>
+          <Modal largeImageURL={largeImageURL} onClose={this.closeModal} />
         )}
       </>
     );
