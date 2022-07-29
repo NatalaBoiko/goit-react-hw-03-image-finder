@@ -17,7 +17,8 @@ export class App extends Component {
     loadMore: false,
     error: null,
     showModal: false,
-    largeImageURL: '',
+    largeImageURL: 'largeImageURL',
+    id: null,
   };
 
   componentDidUpdate(_, prevState) {
@@ -55,7 +56,6 @@ export class App extends Component {
       page: 1,
       loadMore: false,
     });
-    console.log(searchQuery);
   };
 
   onloadMore = () => {
@@ -71,21 +71,13 @@ export class App extends Component {
     });
   };
 
-  openModal = () => {
-    this.setState(({ showModal }) => ({
+  openModal = e => {
+    console.log(e);
+    this.setState(({ showModal, largeImageURL }) => ({
       showModal: !showModal,
+      largeImageURL: largeImageURL,
     }));
   };
-  // openModal = () => {
-  //   this.setState(({ largeImageUrl }) => ({
-  //     largeImageUrl: largeImageUrl,
-  //   }));
-  // };
-  // openModal = ({ largeImageUrl }) => {
-  //   this.setState({
-  //     largeImageUrl: largeImageUrl,
-  //   });
-  // };
 
   closeModal = () => {
     this.setState(prevState => ({
@@ -108,9 +100,6 @@ export class App extends Component {
 
         {loadMore && <Button onloadMore={this.onloadMore} page={page} />}
 
-        {/* <button type="button" onClick={this.openModal}>
-          Open modal
-        </button> */}
         {showModal && (
           <Modal largeImageURL={largeImageURL} onClose={this.closeModal} />
         )}
