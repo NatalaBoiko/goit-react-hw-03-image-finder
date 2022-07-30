@@ -9,6 +9,7 @@ export class Modal extends Component {
   componentDidMount() {
     window.addEventListener('keydown', this.handleKeyDown);
   }
+
   componentWillUnmount() {
     window.removeEventListener('keydown', this.handleKeyDown);
   }
@@ -16,7 +17,6 @@ export class Modal extends Component {
   handleKeyDown = e => {
     if (e.code === 'Escape') {
       this.props.onClose();
-      console.log(e.code);
     }
   };
 
@@ -30,7 +30,7 @@ export class Modal extends Component {
     return createPortal(
       <div className="Overlay" onClick={this.handleBackDropClick}>
         <div className="Modal">
-          <img src={this.props.largeImageUrl} alt="" />
+          <img src={this.props.largeImageURL} alt="" />
         </div>
       </div>,
       modalRoot
@@ -40,5 +40,5 @@ export class Modal extends Component {
 
 Modal.propTypes = {
   onClose: PropTypes.func,
-  largeImageUrl: PropTypes.string,
+  largeImageUrl: PropTypes.string.isRequired,
 };

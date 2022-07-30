@@ -22,8 +22,8 @@ export class App extends Component {
   };
 
   componentDidUpdate(_, prevState) {
-    // console.log(prevState.page);
-    // console.log(this.state.page);
+    console.log(prevState.page);
+    console.log(this.state.page);
     const { searchQuery, page } = this.state;
     if (prevState.searchQuery !== searchQuery || prevState.page !== page) {
       this.getImages(searchQuery, page);
@@ -71,18 +71,18 @@ export class App extends Component {
     });
   };
 
-  openModal = e => {
-    console.log(e);
-    this.setState(({ showModal, largeImageURL }) => ({
-      showModal: !showModal,
+  openModal = largeImageURL => {
+    console.log(largeImageURL);
+    this.setState({
+      showModal: true,
       largeImageURL: largeImageURL,
-    }));
+    });
   };
 
   closeModal = () => {
-    this.setState(prevState => ({
+    this.setState({
       showModal: false,
-    }));
+    });
   };
 
   render() {
